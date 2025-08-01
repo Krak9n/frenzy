@@ -1,0 +1,10 @@
+[package]
+name = "beauty"
+version = "0.1.0"
+edition = "2024"
+
+#[lib]
+
+[dependencies]
+glfw = "0.59.0"
+glad-gl = { path = "./deps/glad-gl/" } 
