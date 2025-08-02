@@ -5,6 +5,7 @@ use glfw::{Action, Context, Key};
 use glad_gl::gl;
 use glad_gl::gl::*;
 use std::os::raw::c_void;
+use std::fs;
 
 static TITLE: &str = "fuck";
 static WIDTH: u32 = 1500;
@@ -24,26 +25,6 @@ const INDICES: [Index; 2] =
   [[0, 1 , 2],
   [0, 3, 2]];
 
-const VERT_SHADER: &str = r#"#version 330 core
-  layout (location = 0) in vec3 pos;
-  layout (location = 1) in vec3 aColor;
-
-  out vec3 color;
-
-  void main() {
-    gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
-    color = aColor;
-  }
-"#;
-
-const FRAG_SHADER: &str = r#"#version 330 core
-  out vec4 final_color;
-  in vec3 color;
-
-  void main() {
-    final_color = vec4(color, 1.0);
-  }
-"#;
 
 fn main() {
   let mut glfw = glfw::init(glfw::fail_on_errors).unwrap();
@@ -114,6 +95,32 @@ fn main() {
     //BindBuffer(ARRAY_BUFFER, 0);
     //BindVertexArray(0);
 
+    compile_and_link();
+    //BindVertexArray(vao);
+  }
+
+  while !window.should_close() {
+    glfw.poll_events();
+    for (_, event) in glfw::flush_messages(&events) {
+        handle_window_event(&mut window, event);
+    }
+
+    unsafe {
+      //gl::ClearColor(0.7, 0.9, 0.1, 1.0);
+      gl::Clear(gl::COLOR_BUFFER_BIT);    
+    
+      DrawElements(TRIANGLES, 6, UNSIGNED_INT, std::ptr::null());
+    }
+    window.swap_buffers();
+  }
+}
+
+fn compile_and_link() {
+  
+  let VERT_SHADER = fs::read_to_string("./src/shaders/some.vert").expect("Could not read file");
+  let FRAG_SHADER = fs::read_to_string("./src/shaders/some.frag").expect("Could not read file");
+
+  unsafe {
     let vertex_shader = gl::CreateShader(VERTEX_SHADER);
     assert_ne!(vertex_shader, 0);
     gl::ShaderSource(
@@ -137,6 +144,7 @@ fn main() {
       v.set_len(log_len.try_into().unwrap());
       panic!("Vertex Compile Error: {}", String::from_utf8_lossy(&v));
     }
+
 
     let fragment_shader = gl::CreateShader(FRAGMENT_SHADER);
     assert_ne!(fragment_shader, 0);
@@ -185,22 +193,7 @@ fn main() {
     DeleteShader(fragment_shader);
 
     UseProgram(shader_program);
-    //BindVertexArray(vao);
-  }
 
-  while !window.should_close() {
-    glfw.poll_events();
-    for (_, event) in glfw::flush_messages(&events) {
-        handle_window_event(&mut window, event);
-    }
-
-    unsafe {
-      //gl::ClearColor(0.7, 0.9, 0.1, 1.0);
-      gl::Clear(gl::COLOR_BUFFER_BIT);    
-    
-      DrawElements(TRIANGLES, 6, UNSIGNED_INT, std::ptr::null());
-    }
-    window.swap_buffers();
   }
 }
 
