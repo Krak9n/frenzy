@@ -1,4 +1,4 @@
-This is going to be a small Card Game made of boredom.
+My failure in B1T GAME JAM.
 
 **Dependencies:**
 + cargo
