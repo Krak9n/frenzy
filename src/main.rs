@@ -7,6 +7,8 @@ use glad_gl::gl::*;
 use std::os::raw::c_void;
 use std::fs;
 
+mod player;
+
 static TITLE: &str = "fuck";
 static WIDTH: u32 = 1500;
 static HEIGHT: u32 = 800;
@@ -33,7 +35,7 @@ fn main() {
     }
 
     unsafe {
-      //gl::ClearColor(0.7, 0.9, 0.1, 1.0);
+      gl::ClearColor(0.0, 0.0, 0.0, 0.9);
       gl::Clear(gl::COLOR_BUFFER_BIT);    
     
     }
